@@ -24,7 +24,7 @@ class AuthController extends Controller
         // if the user exists in our db or not!
 
         $users = User::where('email', '=', $request->input('email'))->first();
-        
+
 
         if($users){
             return response()->json([
@@ -38,31 +38,37 @@ class AuthController extends Controller
             'password' => Hash::make($request->input('password'))
         ]);
 
-        
+
 
         $token = $user->createToken('authToken')->plainTextToken;
         return response()->json([
             'user' => $user,
             'accessToken' => $token
         ], Response::HTTP_CREATED);
-        
 
-        
+
+
     }
 
-    
+
 
     public function login(Request $request){
-        
+
          $request->validate([
             'email' => 'required',
             'password' => 'required'
         ]);
 
-        Auth::attempt($request->only('email', 'password'));
-        
+        $user = Auth::attempt($request->only('email', 'password'));
+
+        if($user == false){
+            return response()->json([
+                'message' => 'Invalid Credentials'
+            ]);
+        }
+
         $user = Auth::user();
-        
+
         /** @var \App\Models\User $user */
         $token = $user->createToken('apiToken')->plainTextToken;
 
@@ -75,7 +81,7 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
-        
+
         $request->validate([
             'token' => 'required'
         ]);
@@ -89,7 +95,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         /** @var \App\Models\User $user */
-        
+
         $token = $user->tokens()->where('id', $request->input('token'))->delete();
 
         return response()->json([

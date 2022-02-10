@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('/products', 'ProductController@index');
 
+    Route::get('/products/paginate/{paginate}', 'ProductController@paginate');
+
     Route::post('/add_product', 'ProductController@store');
 
     Route::get('/product/{id}', 'ProductController@show');
@@ -35,7 +37,17 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('product/search/{name?}', 'ProductController@search');
 
     Route::post('user/logout', 'AuthController@logout');
+    Route::post('product/{product_id}/add_to_cart', 'ProductController@addToCart');
+
+    Route::get('show_cart', 'ProductController@getIndividualCart');
+    Route::get('show_cart_all', 'ProductController@getAllCart');
+
+
+    Route::put('product/{product_id}/updateCart', 'ProductController@updateCart');
+
+
 });
+
 Route::post('user/register_user', 'AuthController@register');
 
 Route::post('user/login', 'AuthController@login');

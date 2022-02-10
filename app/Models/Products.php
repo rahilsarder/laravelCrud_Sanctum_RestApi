@@ -11,4 +11,13 @@ class Products extends Model
 
     protected $fillable = [
         'name', 'slug', 'description','price'];
+
+    protected $casts = [
+        'price' => 'float',
+    ];
+
+
+     public function cartCustom(){
+         return $this->hasOne(CartCustom::class);
+     }
 }
