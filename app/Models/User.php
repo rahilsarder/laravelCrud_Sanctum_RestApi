@@ -46,4 +46,5 @@ class User extends \TCG\Voyager\Models\User
         return $this->hasOne(CartCustom::class)->ofMany();
 //        return $this->hasManyThrough(Products::class,CartCustom::class);
     }
+ 
 }

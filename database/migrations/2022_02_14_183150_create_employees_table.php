@@ -17,11 +17,8 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-//            $table->foreign('user_id')->references('id')->on('users');
             $table->foreignId('users_id')->constrained('users');
-//            $table->foreign('department_id')->references('id')->on('departments');
             $table->foreignId('department_id')->constrained('departments');
-//            $table->foreign('dutyTime_id')->references('id')->on('duty_times');
             $table->foreignId('dutyTime_id')->constrained('duty_times');
             $table->timestamps();
         });

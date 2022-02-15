@@ -34,11 +34,11 @@ Route::get('/loginpage', 'UserController@login');
 // Route::get('/home/{post}', function($slug){
 //         if (!view()->exists($slug))
 //         {
-//             abort(404);  
+//             abort(404);
 //         }
 //         return view($slug);
 
-        
+
 // });
 
 
@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-
-Route::group(['prefix' => 'admin'], function () {
-    Voyager::routes();
-});
+//
+//Route::group(['prefix' => 'admin'], function () {
+//    Voyager::routes();
+//});
