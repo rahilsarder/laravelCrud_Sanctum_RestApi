@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     //Employees Routes
 
     Route::get('employees', 'EmployeesController@index');
+    Route::get('employees/{id}', 'EmployeesController@show');
     Route::get('employees/all', 'EmployeesController@showRelations');
     Route::post('employee/create', 'EmployeesController@create');
     Route::delete('employee/{id}/delete','EmployeesController@destroy');
@@ -61,6 +62,7 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     //Departments Routes
 
     Route::get('departments', 'DepartmentsController@index');
+    Route::get('departments/show/all', 'DepartmentsController@showRelations');
     Route::get('department/{id}', 'DepartmentsController@show');
     Route::post('department/create', "DepartmentsController@create");
     Route::post('department/{id}/delete', 'DepartmentsController@destroy');

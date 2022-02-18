@@ -144,17 +144,29 @@ class DepartmentsController extends Controller
 
         $department = Department::find($id);
 
-
-
         if(!$department){
             return response()->json(['message'=>"The product is invalid!"], Response::HTTP_NOT_FOUND);
         }
 
         $department->delete();
-
         return response()->json(['message' => 'The Department has been deleted successfully'], Response::HTTP_ACCEPTED);
 
+    }
 
+    public function showRelations()
+    {
+        $user = Auth::user()->isAdmin;
+
+        if($user == 0){
+            return response()->json([
+              'message' => 'Not Permitted'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $department = Department::with('employee')->get();
+
+        return response()->json([$department]);
 
     }
+
 }

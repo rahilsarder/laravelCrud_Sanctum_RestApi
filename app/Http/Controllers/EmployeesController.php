@@ -99,9 +99,9 @@ class EmployeesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
-    }
+      {
+         //code here
+      }
 
     /**
      * Display the specified resource.
@@ -111,6 +111,26 @@ class EmployeesController extends Controller
      */
     public function show($id)
     {
+          // Check if the user is an Admin User
+          $user = Auth::user()->isAdmin;
+
+          if($user == 0){
+              return response()->json([
+                  'message' => 'Not Permitted'
+              ], Response::HTTP_UNAUTHORIZED);
+          }
+
+          $employee = Employee::findOrFail($id);
+
+          if(!$employee){
+            return response()->json([
+              'message' => 'Employee doesnt exist'
+            ], Response::HTTP_NOT_FOUND);
+          }
+
+          $employee->with(['department', 'dutyTime'])->get();
+
+          return response()->json([$employee]);
 
     }
 
