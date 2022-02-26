@@ -29,7 +29,7 @@ Route::post('user/login', 'AuthController@login');
 
 //Authorized Routes
 
-Route::group(['middleware' => ['auth:sanctum']], function(){
+Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Products Routes
     Route::get('/products', 'ProductController@index');
@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     //Auth Routes
 
     Route::post('user/logout', 'AuthController@logout');
+    Route::get('user/list', 'AuthController@index');
+    Route::get('user/check', 'AuthController@User');
 
     //Employees Routes
 
@@ -57,7 +59,8 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::get('employees/{id}', 'EmployeesController@show');
     Route::get('employees/all', 'EmployeesController@showRelations');
     Route::post('employee/create', 'EmployeesController@create');
-    Route::delete('employee/{id}/delete','EmployeesController@destroy');
+    Route::delete('employee/{id}/delete', 'EmployeesController@destroy');
+    Route::get('employee/search/{name?}', 'EmployeesController@search');
 
     //Departments Routes
 
@@ -76,4 +79,10 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::post('duty_time/create', 'DutyTimesController@create');
     Route::put('duty_time/{id}/update', 'DutyTimesController@update'); // doesn't work with form-data body type but works with x-www-form-urlendcoded
 
+    //Attendance Routes
+
+    Route::get('employee/attendance', 'AttendancesController@index');
+    Route::post('employee/attendance/create', 'AttendancesController@store');
+
+    //Employee DashBoard
 });

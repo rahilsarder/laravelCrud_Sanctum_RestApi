@@ -22,21 +22,19 @@ class EmployeesController extends Controller
     {
         $user = Auth::user()->isAdmin;
 
-        if($user == 0){
-
+        if ($user == 0) {
             return response()->json([
-
-                'message' => Auth::user(),
-
-            ]);
-
+                'message' => 'Not Permitted'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
+
+        $employees = Employee::with(['user', 'department', 'dutyTime', 'attendance'])->get();
+        // $employees->toJson(JSON_PRETTY_PRINT);
+
         return response()->json([
-            'message' => Employee::all(),
+            'employees' => $employees
         ]);
-
-
     }
 
     /**
@@ -49,7 +47,7 @@ class EmployeesController extends Controller
         // Check if the user is an Admin User
         $user = Auth::user()->isAdmin;
 
-        if($user == 0){
+        if ($user == 0) {
             return response()->json([
                 'message' => 'Not Permitted'
             ], Response::HTTP_UNAUTHORIZED);
@@ -63,16 +61,17 @@ class EmployeesController extends Controller
             'last_name' => 'required',
             'users_id' => 'required',
             'department_id' => 'required',
+            'dutyTime_id' => 'required'
         ]);
 
 
         // Checking if the Employee's User_ID is unique or not
         $input_id = $request->input('users_id');
 
-        if(Employee::where('users_id',$input_id)->first()){
-          return response()->json([
-            'message' => 'User already is an employee'
-          ], 405);
+        if (Employee::where('users_id', $input_id)->first()) {
+            return response()->json([
+                'message' => 'User already is an employee'
+            ], 405);
         }
 
         // Creating new Employee record
@@ -93,15 +92,41 @@ class EmployeesController extends Controller
     }
 
     /**
+     * Search the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function search($name = null)
+    {
+        $user = Auth::user()->isAdmin;
+
+        if ($user == 0) {
+            return response()->json([
+                'message' => 'Not Permitted'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if ($name == null) {
+            return response()->json(['employees' => Employee::with('user', 'department', 'dutyTime')->get()]);
+        }
+        $employee = Employee::where('first_name', 'LIKE', '%' . $name . '%')
+            ->orWhere('last_name', 'LIKE', '%' . $name . '%')
+            ->get();
+
+        return response()->json(['employee' => $employee], Response::HTTP_ACCEPTED);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-      {
-         //code here
-      }
+    {
+        //code here
+    }
 
     /**
      * Display the specified resource.
@@ -111,27 +136,19 @@ class EmployeesController extends Controller
      */
     public function show($id)
     {
-          // Check if the user is an Admin User
-          $user = Auth::user()->isAdmin;
 
-          if($user == 0){
-              return response()->json([
-                  'message' => 'Not Permitted'
-              ], Response::HTTP_UNAUTHORIZED);
-          }
 
-          $employee = Employee::findOrFail($id);
+        // $employee = Employee::findorfail($id);
+        $employee = Employee::with(['user', 'department', 'dutyTime', 'attendance'])->where('id', $id)->get();
 
-          if(!$employee){
+        if (!$employee) {
             return response()->json([
-              'message' => 'Employee doesnt exist'
+                'message' => 'Employee doesnt exist'
             ], Response::HTTP_NOT_FOUND);
-          }
+        }
 
-          $employee->with(['department', 'dutyTime'])->get();
 
-          return response()->json([$employee]);
-
+        return response()->json(['employee' => $employee]);
     }
 
     /**
@@ -165,44 +182,42 @@ class EmployeesController extends Controller
      */
     public function destroy($id)
     {
-      $user = Auth::user()->isAdmin;
+        $user = Auth::user()->isAdmin;
 
-      if($user == 0){
-          return response()->json([
-              'message' => 'Not Permitted'
-          ], Response::HTTP_UNAUTHORIZED);
-      }
+        if ($user == 0) {
+            return response()->json([
+                'message' => 'Not Permitted'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
-      $employee = Employee::find($id);
+        $employee = Employee::find($id);
 
-      if(!$employee){
-        return response()->json(['message' => 'The Employee doesnt exist'
-      ], Response::HTTP_NOT_FOUND);
-      }
+        if (!$employee) {
+            return response()->json([
+                'message' => 'The Employee doesnt exist'
+            ], Response::HTTP_NOT_FOUND);
+        }
 
-      $employee->delete();
+        $employee->delete();
 
-      return response()->json(['message' => 'The Employee has been deleted successfully']);
-
+        return response()->json(['message' => 'The Employee has been deleted successfully']);
     }
 
     public function showRelations()
     {
-      // Check if the user is an Admin User
-      $user = Auth::user()->isAdmin;
+        // Check if the user is an Admin User
+        $user = Auth::user()->isAdmin;
 
-      if($user == 0){
-          return response()->json([
-              'message' => 'Not Permitted'
-          ], Response::HTTP_UNAUTHORIZED);
-      }
+        if ($user == 0) {
+            return response()->json([
+                'message' => 'Not Permitted'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
-      $employees = Employee::with(['user', 'department', 'dutyTime'])->get();
+        $employees = Employee::with(['user', 'department', 'dutyTime'])->get();
 
-      return response()->json([
-        $employees
-      ], Response::HTTP_ACCEPTED);
-
-
+        return response()->json([
+            $employees
+        ], Response::HTTP_ACCEPTED);
     }
 }

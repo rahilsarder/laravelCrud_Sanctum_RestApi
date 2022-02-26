@@ -11,7 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
 
-    public function register(Request $request){
+    public function index()
+    {
+        $user = User::all();
+
+        return response()->json([
+            'Users' => $user
+        ], Response::HTTP_ACCEPTED);
+    }
+
+    public function register(Request $request)
+    {
 
         // body te ashtese naki eita dekhtese!
         $request->validate([
@@ -26,7 +36,7 @@ class AuthController extends Controller
         $users = User::where('email', '=', $request->input('email'))->first();
 
 
-        if($users){
+        if ($users) {
             return response()->json([
                 'messege' => 'User already exists'
             ], Response::HTTP_CONFLICT);
@@ -45,23 +55,21 @@ class AuthController extends Controller
             'user' => $user,
             'accessToken' => $token
         ], Response::HTTP_CREATED);
-
-
-
     }
 
 
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
 
-         $request->validate([
+        $request->validate([
             'email' => 'required',
             'password' => 'required'
         ]);
 
         $user = Auth::attempt($request->only('email', 'password'));
 
-        if($user == false){
+        if ($user == false) {
             return response()->json([
                 'message' => 'Invalid Credentials'
             ]);
@@ -80,13 +88,13 @@ class AuthController extends Controller
         ], Response::HTTP_ACCEPTED);
     }
 
-    public function logout(Request $request){
-
+    public function logout(Request $request)
+    {
         $request->validate([
             'token' => 'required'
         ]);
 
-        if(!Auth::user()){
+        if (!Auth::user()) {
             return response()->json([
                 'message' => 'user not signed in'
             ], Response::HTTP_UNAUTHORIZED);
@@ -102,6 +110,19 @@ class AuthController extends Controller
             'message' => 'Logouted Out',
             'info' => $token
         ], Response::HTTP_ACCEPTED);
+    }
 
+    public function User()
+    {
+        // $request->validate([
+        //     'accessToken' => 'required'
+        // ]);
+        $user = Auth::user();
+
+
+
+        return response()->json([
+            'user' => $user
+        ]);
     }
 }
