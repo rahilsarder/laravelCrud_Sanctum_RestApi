@@ -28,6 +28,7 @@ Route::post('user/register_user', 'AuthController@register');
 Route::post('user/login', 'AuthController@login');
 
 Route::get('user/get_user_details', 'ThirdPartyAPIs@index');
+Route::post('user/payment', 'ThirdPartyAPIs@create');
 //Authorized Routes
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

@@ -28,7 +28,7 @@ Route::get('/', function () {
 // });
 
 Route::get('/home', 'UserController@index')
-->middleware(['auth'])->name('home');
+    ->middleware(['auth'])->name('home');
 Route::get('/loginpage', 'UserController@login');
 
 // Route::get('/home/{post}', function($slug){
@@ -44,7 +44,8 @@ Route::get('/loginpage', 'UserController@login');
 
 Route::get('/product/{name}', 'ProductController@search');
 
-Route::get('/home/{post}', 'UserController@post')->where('post','[A-z-\_]+');
+Route::get('/home/{post}', 'UserController@post')->where('post', '[A-z-\_]+');
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -52,6 +53,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+
+Route::get('/test', function () {
+    $APPKEY = '0c6153c336706c6105ecb96ba3ab754c';
+    $SECRETKEY = 'e778aeca3d660a413fc834deede33c20';
+
+    return 'Bearer ' . base64_encode($APPKEY . ':' . md5($SECRETKEY . time()));;
+});
 
 
 // require __DIR__.'/auth.php';
@@ -62,3 +70,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Route::group(['prefix' => 'admin'], function () {
 //    Voyager::routes();
 //});
+
+
+
