@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropNameFromAttendance extends Migration
+class ChangeDatetimeToTimeInAttendance extends Migration
 {
     /**
      * Run the migrations.
@@ -14,6 +14,8 @@ class DropNameFromAttendance extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
+            $table->time('in_time')->change();
+            $table->time('out_time')->change();
         });
     }
 
@@ -25,7 +27,8 @@ class DropNameFromAttendance extends Migration
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            //
+            $table->dropColumn('in_time');
+            $table->dropColumn('out_time');
         });
     }
 }

@@ -27,8 +27,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('user/register_user', 'AuthController@register');
 Route::post('user/login', 'AuthController@login');
 
+
 Route::get('user/get_user_details', 'ThirdPartyAPIs@index');
 Route::post('user/payment', 'ThirdPartyAPIs@create');
+
+
+Route::get('user/invoice', 'AttendancesController@generateInvoice');
+
+Route::get('user/attend/{id}', 'SalaryCalculationsController@show');
 //Authorized Routes
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

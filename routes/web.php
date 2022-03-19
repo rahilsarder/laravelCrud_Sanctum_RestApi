@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Mail\TestMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,10 +57,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('/test', function () {
-    $APPKEY = '0c6153c336706c6105ecb96ba3ab754c';
-    $SECRETKEY = 'e778aeca3d660a413fc834deede33c20';
 
-    return 'Bearer ' . base64_encode($APPKEY . ':' . md5($SECRETKEY . time()));;
+    if (1646854744 < time()) {
+
+        echo "logic is ok";
+    }
+    else {
+        echo "logic is not ok";
+    }
+
+    echo "<br>";
+    echo time();
 });
 
 
@@ -73,3 +82,7 @@ Route::get('/test', function () {
 
 
 
+route::get('/test/mail', function () {
+    Mail::to('sarder.amin.rahil@gmail.com')->send(new TestMail());
+    return new TestMail();
+});

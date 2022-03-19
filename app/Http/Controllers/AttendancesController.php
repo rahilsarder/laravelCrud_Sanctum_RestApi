@@ -3,9 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\DutyTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use LaravelDaily\Invoices\Classes\Buyer;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+use LaravelDaily\Invoices\Invoice;
 use Symfony\Component\HttpFoundation\Response;
+
+
+
+
 
 class AttendancesController extends Controller
 {
@@ -39,15 +47,6 @@ class AttendancesController extends Controller
         ], Response::HTTP_ACCEPTED);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -69,62 +68,67 @@ class AttendancesController extends Controller
             'in_time' => 'required',
             'out_time' => 'required',
             'employee_id' => 'required',
+            'duty_timing_id' => 'required',
         ]);
 
-        $attendance = Attendance::create([
-            'in_time' => $request->input('in_time'),
-            'out_time' => $request->input('out_time'),
-            'employee_id' => $request->input('employee_id'),
-            'reason' => $request->input('reason')
+
+
+        $dutyTime = DutyTime::find($request->input('duty_timing_id'));
+
+        $compare = $dutyTime->start_time < $request->input('in_time');
+
+        if ($compare) {
+
+
+            $attendance = Attendance::create([
+                'in_time' => $request->input('in_time'),
+                'out_time' => $request->input('out_time'),
+                'employee_id' => $request->input('employee_id'),
+                'is_late' => $request->input('isLate')
+            ]);
+
+            return response()->json([
+                'attendance' => $attendance
+            ]);
+        }
+
+
+        return $dutyTime;
+
+
+        // dd($compare);
+
+
+
+
+        // return response()->json([
+        //     'attendance' => $attendance
+        // ], Response::HTTP_CREATED);
+    }
+
+    public function generateInvoice()
+    {
+        $customer = new Buyer([
+            'name'          => 'John Doe',
+            'custom_fields' => [
+                'email' => 'test@example.com',
+            ],
         ]);
 
-        return response()->json([
-            'attendance' => $attendance
-        ], Response::HTTP_CREATED);
-    }
+        $item = (new InvoiceItem())->title('Invoice Item')->pricePerUnit(100)->quantity(1);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $invoice  = Invoice::make('invoice')
+            ->shipping(50)
+            ->buyer($customer)
+            ->addItem($item)
+            ->currencyCode('BDT')
+            ->currencySymbol('৳')
+            ->payUntilDays(false)
+            ->logo('https://inspirebroadband.net/wp-content/uploads/2021/11/logo-black.png');
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+
+        return $invoice->download();
     }
 }

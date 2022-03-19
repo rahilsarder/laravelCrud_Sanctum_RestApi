@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropUseridFromEmployeesTable extends Migration
+class ChangeDatetimeToTimeInDutyTimesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class DropUseridFromEmployeesTable extends Migration
      */
     public function up()
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+        Schema::table('duty_times', function (Blueprint $table) {
+            $table->time('start_time')->change();
+            $table->time('end_time')->change();
         });
     }
 
@@ -25,8 +26,9 @@ class DropUseridFromEmployeesTable extends Migration
      */
     public function down()
     {
-        Schema::table('employees', function (Blueprint $table) {
-            //
+        Schema::table('duty_times', function (Blueprint $table) {
+            $table->dropColumn('start_time');
+            $table->dropColumn('end_time');
         });
     }
 }

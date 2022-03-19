@@ -45,8 +45,10 @@ class ThirdPartyAPIs extends Controller
      */
     public function create(Request $request)
     {
-        $APPKEY = '0c6153c336706c6105ecb96ba3ab754c';
-        $SECRETKEY = 'e778aeca3d660a413fc834deede33c20';
+        $APPKEY = env('PORTPOS_APP_KEY');
+        $SECRETKEY = env('PORTPOS_SECRET_KEY');
+
+
 
         $request->validate([
             'amount' => 'required',

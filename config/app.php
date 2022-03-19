@@ -163,6 +163,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
+        LaravelDaily\Invoices\InvoiceServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -232,7 +233,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         // 'Cart' => Gloudemans\Shoppingcart\Facades\Cart::class,
-        'Cart' => Darryldecode\Cart\Facades\CartFacade::class
+        'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
+        'Invoice' => LaravelDaily\Invoices\Facades\Invoice::class,
+
 
     ],
 

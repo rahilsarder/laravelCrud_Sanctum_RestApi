@@ -9,5 +9,5 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['in_time', 'out_time', 'employee_id'];
+    protected $fillable = ['in_time', 'out_time', 'employee_id', 'duty_timing_id', 'isLate'];
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropNameFromAttendance extends Migration
+class AddDutyTimingIdAndIsLateInAttendance extends Migration
 {
     /**
      * Run the migrations.
@@ -14,6 +14,8 @@ class DropNameFromAttendance extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
+            $table->foreignId('duty_times_id')->constrained('duty_times');
+            $table->boolean('isLate')->default(false);
         });
     }
 
@@ -25,7 +27,8 @@ class DropNameFromAttendance extends Migration
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            //
+            $table->dropColumn('duty_timing_id');
+            $table->dropColumn('isLate');
         });
     }
 }
